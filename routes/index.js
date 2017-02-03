@@ -5,7 +5,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Abacus Learning Lab' });
+  res.render('index', { title: 'Abacus Learning Lab', user: req.user, anyArray: [10,20,'Hello'] });
 });
 
 router.get('/about', function(req, res, next) {
@@ -29,7 +29,6 @@ router.post('/register', function(req, res) {
 });
 
 router.get('/login', function(req, res) {
-    console.log('user', req.user);
     res.render('login', { user : req.user });
 });
 
