@@ -47,7 +47,7 @@ passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
 // mongoose
-mongoose.connect('mongodb://localhost/abacus-learning-lab');
+mongoose.connect('mongodb://noby:data2017@ds023315.mlab.com:23315/abacus-db');
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
