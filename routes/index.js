@@ -12,6 +12,10 @@ router.get('/about', function(req, res, next) {
   res.render('about');
 });
 
+router.get('/dashboard', function(req, res, next) {
+  res.render('dashboard');
+});
+
 router.get('/register', function(req, res) {
     res.render('register', { });
 });
