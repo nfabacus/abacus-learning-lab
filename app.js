@@ -6,6 +6,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var hbs = require('express-handlebars');
+require('dotenv').config();
 
 var mongoose = require('mongoose');
 var passport = require('passport');
@@ -47,7 +48,7 @@ passport.serializeUser(Account.serializeUser());
 passport.deserializeUser(Account.deserializeUser());
 
 // mongoose
-mongoose.connect('mongodb://noby:data2017@ds023315.mlab.com:23315/abacus-db');
+mongoose.connect(process.env.database);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
