@@ -1,1 +1,7 @@
 <h1>Dashboard</h1>
+
+{{# if user  }}
+  <p>Hello, {{user.username }}! You are logged in.</p>
+  <a href="/logout">Logout</a>
+
+{{/if}}

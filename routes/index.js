@@ -6,6 +6,7 @@ var router = express.Router();
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Abacus Learning Lab', user: req.user, anyArray: [10,20,'Hello'] });
+  if (req.user) res.redirect('/dashboard');
 });
 
 router.get('/about', function(req, res, next) {
@@ -13,7 +14,12 @@ router.get('/about', function(req, res, next) {
 });
 
 router.get('/dashboard', function(req, res, next) {
-  res.render('dashboard');
+  if(req.user) {
+    res.render('dashboard', { user: req.user });
+  } else {
+    res.redirect('/');
+  }
+
 });
 
 router.get('/register', function(req, res) {
@@ -27,7 +33,7 @@ router.post('/register', function(req, res) {
         }
 
         passport.authenticate('local')(req, res, function () {
-            res.redirect('/');
+            res.redirect('/dashboard');
         });
     });
 });
@@ -37,7 +43,7 @@ router.get('/login', function(req, res) {
 });
 
 router.post('/login', passport.authenticate('local'), function(req, res) {
-    res.redirect('/');
+    res.redirect('/dashboard');
 });
 
 router.get('/logout', function(req, res) {
