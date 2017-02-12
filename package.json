@@ -23,7 +23,8 @@
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^4.0.0",
     "serve-favicon": "~2.3.0",
-    "should": "^11.2.0"
+    "should": "^11.2.0",
+    "socket.io": "^1.7.2"
   },
   "devDependencies": {
     "zombie": "^5.0.5"

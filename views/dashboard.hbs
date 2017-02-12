@@ -3,5 +3,59 @@
 {{# if user  }}
   <p>Hello, {{user.username }}! You are logged in.</p>
   <a href="/logout">Logout</a>
-
 {{/if}}
+
+<div class="chat" >
+  <form id="messageForm">
+    <label for="enter-message">Enter Message</label>
+    <textarea id="message"></textarea>
+    <input type="button" name="" value="Send message" id="submitTask">
+  </form>
+  <div id="chat"></div>
+</div>
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+    var socket = io.connect();
+    var $messageForm = $('#messageForm');
+    var $message = $('#message');
+    var $chat = $('#chat');
+
+    $messageForm.submit(function(e){
+      e.preventDefault();
+
+    });
+
+    document.getElementById("submitTask").addEventListener('click', send, false);
+
+    function send(){
+      var currentUser = localStorage.getItem('username');
+
+      socket.emit('send message', {'sender': currentUser,
+      'message': $message.val()});
+      $message.val('');
+
+    }
+
+    socket.on('new message', function(data){
+      var oldMessages = '';
+      if(data[0]){
+        data.forEach(function (messageData){
+          oldMessages+='<div><p>'+messageData.username +':'+messageData.msg+'</p></div>';
+
+          //$chat.append('<div><p>'+messageData.username+': '+messageData.msg+'</p></div>');
+        })
+        document.getElementById('chat').innerHTML = oldMessages;
+      alert('new connection');
+      } else {
+        $chat.append('<div><p>'+data.username+': '+data.msg+'</p></div>');
+        alert('old connection');
+      }
+    });
+
+</script>
