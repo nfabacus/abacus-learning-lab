@@ -8,7 +8,7 @@
 <div class="chat" >
   <form id="messageForm">
     <label for="enter-message">Enter Message</label>
-    <textarea id="message"></textarea>
+    <input id="message"></input>
     <input type="button" name="" value="Send message" id="submitTask">
   </form>
   <div id="chat"></div>
@@ -26,16 +26,10 @@
     var $message = $('#message');
     var $chat = $('#chat');
 
-    $messageForm.submit(function(e){
-      e.preventDefault();
-
-    });
 
     document.getElementById("submitTask").addEventListener('click', send, false);
-
     function send(){
       var currentUser = localStorage.getItem('username');
-
       socket.emit('send message', {'sender': currentUser,
       'message': $message.val()});
       $message.val('');
@@ -44,17 +38,16 @@
 
     socket.on('new message', function(data){
       var oldMessages = '';
+      console.log('data received from new message:', data[0]);
       if(data[0]){
         data.forEach(function (messageData){
           oldMessages+='<div><p>'+messageData.username +':'+messageData.msg+'</p></div>';
-
-          //$chat.append('<div><p>'+messageData.username+': '+messageData.msg+'</p></div>');
         })
         document.getElementById('chat').innerHTML = oldMessages;
-      alert('new connection');
+        console.log('new connection');
       } else {
         $chat.append('<div><p>'+data.username+': '+data.msg+'</p></div>');
-        alert('old connection');
+        console.log('old connection');
       }
     });
 

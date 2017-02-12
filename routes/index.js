@@ -10,12 +10,11 @@ function registerSocketIo(req){
   var io = req.app.get('socketio');
 
   io.on('connection', function(socket){
-    // console.log('this is the socket', socket);
     if(connections.length) {
       connections = connections.filter(function (data){
         return socket != data;
 
-      })
+      });
     }
     connections.push(socket);
     if(messages.length) {
@@ -49,12 +48,12 @@ router.get('/about', function(req, res, next) {
   res.render('about');
 });
 var account = 0;
+console.log('outside route. account is :', account);
 router.get('/dashboard', function(req, res, next) {
 
   console.log('I am at the dashboard');
+  console.log('account is :', account);
   if(req.user) {
-    userSender = req.user.username;
-    // now use socket.io in your routes file
     if(account===0){
       registerSocketIo(req);
     }
