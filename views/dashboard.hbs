@@ -33,7 +33,6 @@
       socket.emit('send message', {'sender': currentUser,
       'message': $message.val()});
       $message.val('');
-
     }
 
     socket.on('new message', function(data){
