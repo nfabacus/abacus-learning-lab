@@ -3,40 +3,7 @@ var passport = require('passport');
 var Account = require('../models/account');
 var router = express.Router();
 
-var messages = [];
-var connections = [];
-var isConnected = false;
-var connectedUser = "";
 
-function registerSocketIo(req){
-  var io = req.app.get('socketio');
-  console.log("req.user: ", req.user.username);
-  io.on('connection', function(socket){
-    socket.user = req.user;
-    console.log(socket.user.username + ' is connected.');
-    connections = connections.filter(function (data){
-      return data !== socket;
-    });
-    connections.push(socket);
-    if(messages.length) {
-      io.sockets.emit('new message', messages);
-    }
-    console.log('connection: %s socket(s) connected',connections.length);
-
-    // disconnect
-    socket.on('disconnect', function(data){
-      connections.splice(connections.indexOf(socket),1);
-      console.log('Disconnected: %s socket(s) connected', connections.length);
-    });
-
-    // Send Message
-    socket.on('send message', function(data){
-      var messageObj = {username:data.sender, msg: data.message};
-      messages.push(messageObj);
-      io.sockets.emit('new message', messageObj);
-    });
-  });
-}
 /* GET home page. */
 router.get('/', function(req, res, next) {
   if (req.user) {
@@ -52,16 +19,8 @@ router.get('/about', function(req, res, next) {
 });
 
 router.get('/dashboard', function(req, res, next) {
-
   console.log('I am at the dashboard');
   if(req.user) {
-    console.log('username before socket: ', req.user);
-    if(!isConnected && connectedUser !== req.user){
-      console.log('user to be connected: ', req.user);
-      connectedUser = req.user;
-      registerSocketIo(req);
-      isConnected = true;
-    }
     return res.render('dashboard', { user: req.user });
   } else {
     return res.redirect('/');
