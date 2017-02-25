@@ -19,7 +19,6 @@ router.get('/about', function(req, res, next) {
 });
 
 router.get('/dashboard', function(req, res, next) {
-  console.log('I am at the dashboard');
   if(req.user) {
     return res.render('dashboard', { user: req.user });
   } else {
