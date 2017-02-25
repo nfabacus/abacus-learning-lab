@@ -10,9 +10,10 @@ var connectedUser = "";
 
 function registerSocketIo(req){
   var io = req.app.get('socketio');
+  console.log("req.user: ", req.user.username);
   io.on('connection', function(socket){
     socket.user = req.user;
-    console.log(socket.user + ' is connected.');
+    console.log(socket.user.username + ' is connected.');
     connections = connections.filter(function (data){
       return data !== socket;
     });
@@ -38,12 +39,16 @@ function registerSocketIo(req){
 }
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Abacus Learning Lab', user: req.user, anyArray: [10,20,'Hello'] });
-  if (req.user) res.redirect('/dashboard');
+  if (req.user) {
+    return res.redirect('/dashboard');
+  } else {
+    return res.render('index', { title: 'Abacus Learning Lab', user: req.user, anyArray: [10,20,'Hello'] });
+  }
+
 });
 
 router.get('/about', function(req, res, next) {
-  res.render('about');
+  return res.render('about');
 });
 
 router.get('/dashboard', function(req, res, next) {
@@ -52,13 +57,14 @@ router.get('/dashboard', function(req, res, next) {
   if(req.user) {
     console.log('username before socket: ', req.user);
     if(!isConnected && connectedUser !== req.user){
+      console.log('user to be connected: ', req.user);
       connectedUser = req.user;
       registerSocketIo(req);
       isConnected = true;
     }
-    res.render('dashboard', { user: req.user });
+    return res.render('dashboard', { user: req.user });
   } else {
-    res.redirect('/');
+    return res.redirect('/');
   }
 
 });
@@ -72,7 +78,6 @@ router.post('/register', function(req, res) {
         if (err) {
             return res.render('register', { account : account });
         }
-
         passport.authenticate('local')(req, res, function () {
             res.redirect('/dashboard');
         });
@@ -80,16 +85,16 @@ router.post('/register', function(req, res) {
 });
 
 router.get('/login', function(req, res) {
-    res.render('login', { user : req.user });
+    return res.render('login', { user : req.user });
 });
 
 router.post('/login', passport.authenticate('local'), function(req, res) {
-    res.redirect('/dashboard');
+    return res.redirect('/dashboard');
 });
 
 router.get('/logout', function(req, res) {
     req.logout();
-    res.redirect('/');
+    return res.redirect('/');
 });
 
 router.get('/ping', function(req, res){
