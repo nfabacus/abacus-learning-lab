@@ -1,8 +1,10 @@
-<h1>Dashboard</h1>
-
 {{# if user  }}
-  <p>Hello, {{user.username }}! You are logged in.</p>
-  <a href="/logout">Logout</a>
+  <button id="logout">Logout</button>
+{{/if}}
+
+<h1>Classroom Chat</h1>
+{{# if user  }}
+  <p id="display">Hello, {{user.username }}! You are logged in.</p>
 {{/if}}
 
 <div class="chat" >
@@ -25,14 +27,31 @@
     var $messageForm = $('#messageForm');
     var $message = $('#message');
     var $chat = $('#chat');
+    var $display = $('#display');
+    var $logout = $('#logout');
 
+    $logout.click(function(){
+      console.log("logout btn clicked");
+      localStorage.clear();
+      console.log("localStorage: ", localStorage);
+      $display.html('You are logged out!');
+      window.location.replace('/logout');
+
+    });
 
     document.getElementById("submitTask").addEventListener('click', send, false);
     function send(){
       var currentUser = localStorage.getItem('username');
-      socket.emit('send message', {'sender': currentUser,
-      'message': $message.val()});
-      $message.val('');
+      if(!currentUser) {
+        $display.html('You are logged out! You cannot send messages when you are logged out.');
+        window.location.replace('/logout');
+      } else {
+        console.log('currentUser: ', currentUser);
+        socket.emit('send message', {'sender': currentUser,
+        'message': $message.val()});
+        $message.val('');
+      }
+
     }
 
     socket.on('new message', function(data){
